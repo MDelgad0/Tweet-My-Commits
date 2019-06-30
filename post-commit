@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Tweets my commit message, example:
+#   [develop]: fixed garbage code
+
+MAX_TWEET_LENGTH=200
+
+project=$(basename `git rev-parse --show-toplevel`)
+branch=`git rev-parse --abbrev-ref HEAD`
+commit_message=`git log --pretty=format:%s -n1`
+tweet="[${project}: ${branch}] ${commit_message}"
+
+if [ ${#tweet} -gt $MAX_TWEET_LENGTH ]
+  then
+    tweet=${$tweet:0:$MAX_TWEET_LENGTH}
+fi
+
+# tweet my commit
+twurl -d "status=$tweet" /1.1/statuses/update.json
